@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biology Quiz Speed Test</title>
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #81c784;
+            --accent-color: #ffc107;
+            --text-color: #212121;
+            --light-color: #f5f5f5;
+            --wrong-color: #f44336;
+            --correct-color: #4caf50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+        
+        .setup-section {
+            margin-bottom: 2rem;
+        }
+        
+        .topic-selection {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--secondary-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+            width: 100%;
+        }
+        
+        button:hover {
+            background-color: #1b5e20;
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .quiz-section {
+            display: none;
+        }
+        
+        .timer-container {
+            margin-bottom: 1rem;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            height: 10px;
+            overflow: hidden;
+        }
+        
+        .timer-bar {
+            height: 100%;
+            width: 100%;
+            background-color: var(--accent-color);
+            transition: width 0.1s linear;
+        }
+        
+        .question-container {
+            background-color: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .option {
+            background-color: white;
+            border: 2px solid var(--secondary-color);
+            border-radius: 5px;
+            padding: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .option.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .option.correct {
+            background-color: var(--correct-color);
+            color: white;
+            border-color: var(--correct-color);
+        }
+        
+        .option.wrong {
+            background-color: var(--wrong-color);
+            color: white;
+            border-color: var(--wrong-color);
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .statistics {
+            margin-top: 2rem;
+            background-color: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .stat-item {
+            margin-bottom: 1rem;
+        }
+        
+        .stat-label {
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .result-section {
+            display: none;
+            text-align: center;
+        }
+        
+        .result-header {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .result-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+        }
+        
+        .stat-box {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--light-color);
+            border-radius: 8px;
+            min-width: 120px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-name {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+        
+        .restart-btn {
+            background-color: var(--secondary-color);
+            margin-top: 1rem;
+        }
+        
+        .restart-btn:hover {
+            background-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Biology Quiz Speed Test</h1>
+            <p class="subtitle">Test your biology knowledge with 10 random questions</p>
+        </header>
+        
+        <div class="setup-section" id="setupSection">
+            <div class="topic-selection">
+                <label for="topicSelect">Select a Biology Topic:</label>
+                <select id="topicSelect">
+                    <option value="" disabled selected>-- Choose a topic --</option>
+                    <option value="cellBiology">Cell Biology</option>
+                    <option value="genetics">Genetics & Molecular Biology</option>
+                    <option value="ecology">Ecology</option>
+                    <option value="evolution">Evolution</option>
+                    <option value="humanAnatomy">Human Anatomy & Physiology</option>
+                    <option value="plantBiology">Plant Biology</option>
+                    <option value="microbiology">Microbiology</option>
+                    <option value="zoology">Zoology</option>
+                    <option value="biotechnology">Biotechnology</option>
+                    <option value="biochemistry">Biochemistry</option>
+                </select>
+            </div>
+            <button id="startBtn" disabled>Start Quiz</button>
+        </div>
+        
+        <div class="quiz-section" id="quizSection">
+            <div class="timer-container">
+                <div class="timer-bar" id="timerBar"></div>
+            </div>
+            <div class="progress-text">
+                Question <span id="currentQuestion">1</span> of <span id="totalQuestions">10</span>
+            </div>
+            <div class="question-container">
+                <div class="question" id="questionText">
+                    <!-- Question will be inserted here -->
+                </div>
+                <div class="options" id="optionsContainer">
+                    <!-- Options will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-section" id="resultSection">
+            <h2 class="result-header">Quiz Complete!</h2>
+            <div class="score">
+                <span id="scorePercent">0</span>%
+            </div>
+            <p>You scored <span id="scoreValue">0</span> out of <span id="scoreTotal">10</span></p>
+            
+            <div class="result-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="correctAnswers">0</div>
+                    <div class="stat-name">Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="incorrectAnswers">0</div>
+                    <div class="stat-name">Incorrect</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="avgTime">0</div>
+                    <div class="stat-name">Avg. Time (s)</div>
+                </div>
+            </div>
+            
+            <button class="restart-btn" id="restartBtn">Try Another Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const setupSection = document.getElementById('setupSection');
+        const quizSection = document.getElementById('quizSection');
+        const resultSection = document.getElementById('resultSection');
+        const topicSelect = document.getElementById('topicSelect');
+        const startBtn = document.getElementById('startBtn');
+        const timerBar = document.getElementById('timerBar');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const currentQuestionElement = document.getElementById('currentQuestion');
+        const totalQuestionsElement = document.getElementById('totalQuestions');
+        const scorePercentElement = document.getElementById('scorePercent');
+        const scoreValueElement = document.getElementById('scoreValue');
+        const scoreTotalElement = document.getElementById('scoreTotal');
+        const correctAnswersElement = document.getElementById('correctAnswers');
+        const incorrectAnswersElement = document.getElementById('incorrectAnswers');
+        const avgTimeElement = document.getElementById('avgTime');
+        const restartBtn = document.getElementById('restartBtn');
+
+        // Quiz settings and state
+        const quizSettings = {
+            questionsPerQuiz: 10,
+            timePerQuestion: 20, // in seconds
+        };
+
+        let quizState = {
+            currentTopic: '',
+            currentQuestions: [],
+            currentQuestionIndex: 0,
+            score: 0,
+            answerTimes: [],
+            timerInterval: null,
+            remainingTime: 0,
+            selectedOption: null,
+        };
+
+        // Question Banks for each topic - TO BE FILLED OUT MANUALLY LATER
+        const questionBanks = {
+            cellBiology: [],
+            genetics: [],
+            ecology: [],
+            evolution: [],
+            humanAnatomy: [],
+            plantBiology: [],
+            microbiology: [],
+            zoology: [],
+            biotechnology: [],
+            biochemistry: [],
+        };
+
+        // Enable start button when a topic is selected
+        topicSelect.addEventListener('change', () => {
+            startBtn.disabled = topicSelect.value === '';
+        });
+
+        // Start Quiz Button Event Listener
+        startBtn.addEventListener('click', startQuiz);
+
+        // Restart Quiz Button Event Listener
+        restartBtn.addEventListener('click', () => {
+            resultSection.style.display = 'none';
+            setupSection.style.display = 'block';
+        });
+
+        // Start the quiz
+        function startQuiz() {
+            // Get selected topic
+            quizState.currentTopic = topicSelect.value;
+            
+            // Check if there are questions for this topic
+            if (!questionBanks[quizState.currentTopic] || questionBanks[quizState.currentTopic].length === 0) {
+                alert("No questions available for this topic yet. Please select another topic or add questions to the topic.");
+                return;
+            }
+            
+            // Reset quiz state
+            quizState.currentQuestions = [];
+            quizState.currentQuestionIndex = 0;
+            quizState.score = 0;
+            quizState.answerTimes = [];
+            
+            // Randomly select questions for this quiz
+            selectRandomQuestions();
+            
+            // Update UI
+            setupSection.style.display = 'none';
+            quizSection.style.display = 'block';
+            
+            // Display first question
+            displayQuestion();
+        }
+
+        // Select random questions from the question bank
+        function selectRandomQuestions() {
+            const allQuestions = [...questionBanks[quizState.currentTopic]];
+            const selectedQuestions = [];
+            
+            // If we have fewer questions than needed, use all of them
+            if (allQuestions.length <= quizSettings.questionsPerQuiz) {
+                quizState.currentQuestions = allQuestions;
+            } else {
+                // Randomly select questions
+                while (selectedQuestions.length < quizSettings.questionsPerQuiz && allQuestions.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * allQuestions.length);
+                    selectedQuestions.push(allQuestions.splice(randomIndex, 1)[0]);
+                }
+                quizState.currentQuestions = selectedQuestions;
+            }
+            
+            // Update total questions display
+            totalQuestionsElement.textContent = quizState.currentQuestions.length;
+        }
+
+        // Display the current question
+        function displayQuestion() {
+            // Clear any previous timer
+            clearInterval(quizState.timerInterval);
+            
+            // Get current question
+            const currentQuestion = quizState.currentQuestions[quizState.currentQuestionIndex];
+            
+            // Update question number display
+            currentQuestionElement.textContent = quizState.currentQuestionIndex + 1;
+            
+            // Display question text
+            questionText.textContent = currentQuestion.question;
+            
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+            
+            // Display options
+            currentQuestion.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                optionElement.addEventListener('click', selectOption);
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Reset selected option
+            quizState.selectedOption = null;
+            
+            // Start timer
+            startTimer();
+        }
+
+        // Start timer for current question
+        function startTimer() {
+            quizState.remainingTime = quizSettings.timePerQuestion;
+            
+            // Reset timer bar
+            timerBar.style.width = '100%';
+            
+            // Start time tracking for this question
+            const startTime = Date.now();
+            
+            // Set timer interval
+            quizState.timerInterval = setInterval(() => {
+                quizState.remainingTime -= 0.1;
+                
+                // Update timer bar
+                const percentRemaining = (quizState.remainingTime / quizSettings.timePerQuestion) * 100;
+                timerBar.style.width = `${percentRemaining}%`;
+                
+                // If time is up
+                if (quizState.remainingTime <= 0) {
+                    clearInterval(quizState.timerInterval);
+                    
+                    // Record time taken (full time since they didn't answer)
+                    quizState.answerTimes.push(quizSettings.timePerQuestion);
+                    
+                    // Show correct answer
+                    showCorrectAnswer();
+                    
+                    // Move to next question after a short delay
+                    setTimeout(nextQuestion, 1500);
+                }
+            }, 100);
+        }
+
+        // Handle option selection
+        function selectOption(event) {
+            // If already selected an option, don't allow changing
+            if (quizState.selectedOption !== null) return;
+            
+            // Clear timer
+            clearInterval(quizState.timerInterval);
+            
+            // Get selected option index
+            const selectedIndex = parseInt(event.target.dataset.index);
+            quizState.selectedOption = selectedIndex;
+            
+            // Get current question
+            const currentQuestion = quizState.currentQuestions[quizState.currentQuestionIndex];
+            
+            // Calculate time taken
+            const timeTaken = quizSettings.timePerQuestion - quizState.remainingTime;
+            quizState.answerTimes.push(timeTaken);
+            
+            // Check if answer is correct
+            const isCorrect = selectedIndex === currentQuestion.correctIndex;
+            
+            // Update score
+            if (isCorrect) {
+                quizState.score++;
+            }
+            
+            // Highlight selected option
+            event.target.classList.add('selected');
+            
+            // Show correct answer
+            showCorrectAnswer();
+            
+            // Move to next question after a short delay
+            setTimeout(nextQuestion, 1500);
+        }
+
+        // Show the correct answer
+        function showCorrectAnswer() {
+            const currentQuestion = quizState.currentQuestions[quizState.currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((option, index) => {
+                if (index === currentQuestion.correctIndex) {
+                    option.classList.add('correct');
+                } else if (index === quizState.selectedOption) {
+                    option.classList.add('wrong');
+                }
+            });
+        }
+
+        // Move to the next question
+        function nextQuestion() {
+            quizState.currentQuestionIndex++;
+            
+            // Check if quiz is complete
+            if (quizState.currentQuestionIndex >= quizState.currentQuestions.length) {
+                showResults();
+            } else {
+                displayQuestion();
+            }
+        }
+
+        // Show quiz results
+        function showResults() {
+            quizSection.style.display = 'none';
+            resultSection.style.display = 'block';
+            
+            // Calculate score percentage
+            const scorePercent = Math.round((quizState.score / quizState.currentQuestions.length) * 100);
+            
+            // Calculate average time
+            const avgTime = quizState.answerTimes.reduce((sum, time) => sum + time, 0) / quizState.answerTimes.length;
+            
+            // Update result display
+            scorePercentElement.textContent = scorePercent;
+            scoreValueElement.textContent = quizState.score;
+            scoreTotalElement.textContent = quizState.currentQuestions.length;
+            correctAnswersElement.textContent = quizState.score;
+            incorrectAnswersElement.textContent = quizState.currentQuestions.length - quizState.score;
+            avgTimeElement.textContent = avgTime.toFixed(1);
+        }
+    </script>
+</body>
+</html>
