@@ -6,249 +6,268 @@
     <title>Biology Quiz Speed Test</title>
     <style>
         :root {
-            --primary-color: #2e7d32;
-            --secondary-color: #81c784;
-            --accent-color: #ffc107;
-            --text-color: #212121;
-            --light-color: #f5f5f5;
-            --wrong-color: #f44336;
-            --correct-color: #4caf50;
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
         }
-        
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background-color: var(--light-color);
-            color: var(--text-color);
+            background-color: #f5f5f5;
+            color: var(--dark-color);
             line-height: 1.6;
         }
-        
+
         .container {
             max-width: 800px;
             margin: 2rem auto;
-            padding: 2rem;
+            padding: 1rem;
             background-color: white;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-        
+
         header {
             text-align: center;
             margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
         }
-        
+
         h1 {
             color: var(--primary-color);
-            font-size: 2.5rem;
             margin-bottom: 0.5rem;
         }
-        
+
         .subtitle {
             color: var(--secondary-color);
-            font-size: 1.2rem;
+            font-weight: 300;
         }
-        
-        .setup-section {
-            margin-bottom: 2rem;
-        }
-        
+
         .topic-selection {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: var(--light-color);
+            border-radius: 5px;
         }
-        
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--primary-color);
+
+        .topic-selection h2 {
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            color: var(--secondary-color);
         }
-        
-        select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid var(--secondary-color);
+
+        select, button {
+            padding: 0.75rem 1rem;
+            border: none;
             border-radius: 5px;
             font-size: 1rem;
-            margin-bottom: 1rem;
         }
-        
+
+        select {
+            width: 100%;
+            margin-bottom: 1rem;
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
         button {
             background-color: var(--primary-color);
             color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 5px;
             cursor: pointer;
+            font-weight: bold;
             transition: background-color 0.3s;
-            display: block;
             width: 100%;
         }
-        
+
         button:hover {
-            background-color: #1b5e20;
+            background-color: #2980b9;
         }
-        
+
         button:disabled {
-            background-color: #cccccc;
+            background-color: #95a5a6;
             cursor: not-allowed;
         }
-        
+
         .quiz-section {
             display: none;
         }
-        
+
+        .quiz-section.active {
+            display: block;
+        }
+
         .timer-container {
             margin-bottom: 1rem;
-            background-color: #e0e0e0;
-            border-radius: 5px;
+            position: relative;
             height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
             overflow: hidden;
         }
-        
+
         .timer-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
             height: 100%;
             width: 100%;
-            background-color: var(--accent-color);
+            background-color: var(--primary-color);
             transition: width 0.1s linear;
         }
-        
+
+        .timer-text {
+            text-align: right;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
         .question-container {
-            background-color: var(--light-color);
+            margin-bottom: 2rem;
             padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         .question {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            color: #2c3e50;
+            line-height: 1.4;
         }
-        
-        .options {
+
+        .answers {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
         }
-        
-        @media (max-width: 600px) {
-            .options {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .option {
-            background-color: white;
-            border: 2px solid var(--secondary-color);
-            border-radius: 5px;
-            padding: 0.8rem;
+
+        .answer-btn {
+            text-align: left;
+            padding: 1.2rem;
+            background-color: #e9ecef;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #2c3e50;
         }
-        
-        .option:hover {
-            background-color: var(--secondary-color);
-            color: white;
+
+        .answer-btn:hover {
+            background-color: #dee2e6;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        
-        .option.selected {
+
+        .answer-btn.selected {
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
+            transform: translateY(0);
         }
-        
-        .option.correct {
-            background-color: var(--correct-color);
+
+        .answer-btn.correct {
+            background-color: var(--success-color);
             color: white;
-            border-color: var(--correct-color);
+            border-color: var(--success-color);
         }
-        
-        .option.wrong {
-            background-color: var(--wrong-color);
+
+        .answer-btn.incorrect {
+            background-color: var(--danger-color);
             color: white;
-            border-color: var(--wrong-color);
+            border-color: var(--danger-color);
         }
-        
-        .progress-text {
-            text-align: center;
-            font-size: 0.9rem;
+
+        .progress {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 1rem;
+        }
+
+        .progress-count {
+            font-weight: bold;
             color: var(--primary-color);
         }
-        
-        .statistics {
-            margin-top: 2rem;
-            background-color: var(--light-color);
-            padding: 1.5rem;
-            border-radius: 8px;
+
+        .progress-score {
+            font-weight: bold;
+            color: var(--success-color);
         }
-        
-        .stat-item {
-            margin-bottom: 1rem;
-        }
-        
-        .stat-label {
-            font-weight: 600;
-            margin-right: 0.5rem;
-        }
-        
-        .result-section {
+
+        .results-section {
             display: none;
             text-align: center;
         }
-        
-        .result-header {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+
+        .results-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .results-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
             color: var(--primary-color);
         }
-        
-        .score {
-            font-size: 3rem;
-            font-weight: bold;
-            color: var(--accent-color);
-            margin-bottom: 1rem;
+
+        .time-display {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--secondary-color);
         }
-        
-        .result-stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 2rem 0;
-        }
-        
-        .stat-box {
-            text-align: center;
+
+        .results-message {
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
             padding: 1rem;
+            border-radius: 5px;
             background-color: var(--light-color);
-            border-radius: 8px;
-            min-width: 120px;
         }
-        
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        
-        .stat-name {
-            font-size: 0.9rem;
-            color: var(--text-color);
-        }
-        
+
         .restart-btn {
-            background-color: var(--secondary-color);
+            display: inline-block;
             margin-top: 1rem;
-        }
-        
-        .restart-btn:hover {
             background-color: var(--primary-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (min-width: 768px) {
+            .answers {
+                grid-template-columns: 1fr 1fr;
+            }
         }
     </style>
 </head>
@@ -256,336 +275,1019 @@
     <div class="container">
         <header>
             <h1>Biology Quiz Speed Test</h1>
-            <p class="subtitle">Test your biology knowledge with 10 random questions</p>
+            <p class="subtitle">Test your knowledge against the clock!</p>
         </header>
-        
-        <div class="setup-section" id="setupSection">
-            <div class="topic-selection">
-                <label for="topicSelect">Select a Biology Topic:</label>
-                <select id="topicSelect">
-                    <option value="" disabled selected>-- Choose a topic --</option>
-                    <option value="cellBiology">Cell Biology</option>
-                    <option value="genetics">Genetics & Molecular Biology</option>
-                    <option value="ecology">Ecology</option>
-                    <option value="evolution">Evolution</option>
-                    <option value="humanAnatomy">Human Anatomy & Physiology</option>
-                    <option value="plantBiology">Plant Biology</option>
-                    <option value="microbiology">Microbiology</option>
-                    <option value="zoology">Zoology</option>
-                    <option value="biotechnology">Biotechnology</option>
-                    <option value="biochemistry">Biochemistry</option>
-                </select>
-            </div>
+
+        <!-- Topic Selection Screen -->
+        <div class="topic-selection" id="topicSelection">
+            <h2>Select a Biology Discipline</h2>
+            <select id="topicSelect">
+                <option value="" disabled selected>Choose a topic...</option>
+                <option value="cell-biology">Cell Biology</option>
+                <option value="genetics">Genetics</option>
+                <option value="evolution">Evolution</option>
+                <option value="human-anatomy">Human Anatomy</option>
+                <option value="ecology">Ecology</option>
+                <option value="microbiology">Microbiology</option>
+                <option value="biochemistry">Biochemistry</option>
+                <option value="plant-biology">Plant Biology</option>
+                <option value="zoology">Zoology</option>
+                <option value="biotechnology">Biotechnology</option>
+            </select>
             <button id="startBtn" disabled>Start Quiz</button>
         </div>
-        
+
+        <!-- Quiz Section -->
         <div class="quiz-section" id="quizSection">
+            <div class="progress">
+                <div class="progress-count">Question <span id="currentQuestion">1</span> of <span id="totalQuestions">10</span></div>
+                <div class="progress-score">Score: <span id="currentScore">0</span></div>
+            </div>
+            
+            <div class="timer-text">Time remaining: <span id="timerText">20</span>s</div>
             <div class="timer-container">
                 <div class="timer-bar" id="timerBar"></div>
             </div>
-            <div class="progress-text">
-                Question <span id="currentQuestion">1</span> of <span id="totalQuestions">10</span>
-            </div>
+            
             <div class="question-container">
-                <div class="question" id="questionText">
-                    <!-- Question will be inserted here -->
-                </div>
-                <div class="options" id="optionsContainer">
-                    <!-- Options will be inserted here -->
+                <div class="question" id="questionText">Question text goes here.</div>
+                <div class="answers" id="answerButtons">
+                    <!-- Answer buttons will be generated here -->
                 </div>
             </div>
         </div>
-        
-        <div class="result-section" id="resultSection">
-            <h2 class="result-header">Quiz Complete!</h2>
-            <div class="score">
-                <span id="scorePercent">0</span>%
-            </div>
-            <p>You scored <span id="scoreValue">0</span> out of <span id="scoreTotal">10</span></p>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <h2 class="results-header">Quiz Results</h2>
+            <div class="score-display"><span id="finalScore">0</span> / <span id="maxScore">10</span></div>
+            <div class="time-display">Completed in <span id="totalTime">0</span> seconds</div>
             
-            <div class="result-stats">
-                <div class="stat-box">
-                    <div class="stat-value" id="correctAnswers">0</div>
-                    <div class="stat-name">Correct</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="incorrectAnswers">0</div>
-                    <div class="stat-name">Incorrect</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="avgTime">0</div>
-                    <div class="stat-name">Avg. Time (s)</div>
-                </div>
+            <div class="results-message" id="resultsMessage">
+                <!-- Results message will be generated here -->
             </div>
             
-            <button class="restart-btn" id="restartBtn">Try Another Quiz</button>
+            <button id="restartBtn" class="restart-btn">Try Another Topic</button>
         </div>
     </div>
 
     <script>
         // DOM Elements
-        const setupSection = document.getElementById('setupSection');
+        const topicSelection = document.getElementById('topicSelection');
         const quizSection = document.getElementById('quizSection');
-        const resultSection = document.getElementById('resultSection');
+        const resultsSection = document.getElementById('resultsSection');
         const topicSelect = document.getElementById('topicSelect');
         const startBtn = document.getElementById('startBtn');
-        const timerBar = document.getElementById('timerBar');
         const questionText = document.getElementById('questionText');
-        const optionsContainer = document.getElementById('optionsContainer');
+        const answerButtons = document.getElementById('answerButtons');
         const currentQuestionElement = document.getElementById('currentQuestion');
         const totalQuestionsElement = document.getElementById('totalQuestions');
-        const scorePercentElement = document.getElementById('scorePercent');
-        const scoreValueElement = document.getElementById('scoreValue');
-        const scoreTotalElement = document.getElementById('scoreTotal');
-        const correctAnswersElement = document.getElementById('correctAnswers');
-        const incorrectAnswersElement = document.getElementById('incorrectAnswers');
-        const avgTimeElement = document.getElementById('avgTime');
+        const currentScoreElement = document.getElementById('currentScore');
+        const timerBar = document.getElementById('timerBar');
+        const timerText = document.getElementById('timerText');
+        const finalScoreElement = document.getElementById('finalScore');
+        const maxScoreElement = document.getElementById('maxScore');
+        const totalTimeElement = document.getElementById('totalTime');
+        const resultsMessageElement = document.getElementById('resultsMessage');
         const restartBtn = document.getElementById('restartBtn');
 
-        // Quiz settings and state
-        const quizSettings = {
-            questionsPerQuiz: 10,
-            timePerQuestion: 20, // in seconds
-        };
+        // Quiz Variables
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 20;
+        let timerInterval;
+        let quizQuestions = [];
+        let quizStartTime;
+        let quizEndTime;
+        let selectedTopic = '';
 
-        let quizState = {
-            currentTopic: '',
-            currentQuestions: [],
-            currentQuestionIndex: 0,
-            score: 0,
-            answerTimes: [],
-            timerInterval: null,
-            remainingTime: 0,
-            selectedOption: null,
-        };
 
-        // Question Banks for each topic - TO BE FILLED OUT MANUALLY LATER
-        const questionBanks = {
-            cellBiology: [],
-            genetics: [],
-            ecology: [],
-            evolution: [],
-            humanAnatomy: [],
-            plantBiology: [],
-            microbiology: [],
-            zoology: [],
-            biotechnology: [],
-            biochemistry: [],
-        };
+        const quizBanks = {
+  "cell-biology": [
+    {
+      question: "Which organelle is known as the 'powerhouse of the cell'?",
+      options: [
+        "Mitochondria",
+        "Nucleus",
+        "Golgi apparatus",
+        "Endoplasmic reticulum"
+      ],
+      answer: 0
+    },
+    {
+      question: "What is the primary function of the cell membrane?",
+      options: [
+        "To regulate what enters and exits the cell",
+        "To produce energy for the cell",
+        "To store genetic information",
+        "To break down waste materials"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which structure is responsible for protein synthesis in cells?",
+      options: [
+        "Ribosomes",
+        "Lysosomes",
+        "Peroxisomes",
+        "Centrosomes"
+      ],
+      answer: 0
+    },
+    {
+      question: "What is the role of lysosomes in the cell?",
+      options: [
+        "Digestion of cellular waste and debris",
+        "Production of lipids",
+        "Cell division",
+        "Energy production"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which cellular process involves the division of the cytoplasm?",
+      options: [
+        "Cytokinesis",
+        "Mitosis",
+        "Meiosis",
+        "Interphase"
+      ],
+      answer: 0
+    }
+  ],
+  
+  "genetics": [
+    {
+      question: "What is the molecule that carries genetic information in cells?",
+      options: [
+        "DNA",
+        "RNA",
+        "Protein",
+        "Lipid"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which process creates an exact copy of a DNA molecule?",
+      options: [
+        "Replication",
+        "Transcription",
+        "Translation",
+        "Mutation"
+      ],
+      answer: 0
+    },
+    {
+      question: "What term describes different forms of the same gene?",
+      options: [
+        "Alleles",
+        "Chromosomes",
+        "Genomes",
+        "Mutations"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which type of mutation involves the substitution of one nucleotide for another?",
+      options: [
+        "Point mutation",
+        "Frameshift mutation",
+        "Deletion",
+        "Duplication"
+      ],
+      answer: 0
+    },
+    {
+      question: "What principle states that genes are inherited independently of each other?",
+      options: [
+        "Independent assortment",
+        "Segregation",
+        "Dominance",
+        "Codominance"
+      ],
+      answer: 0
+    }
+  ],
+  
+  "evolution": [
+    {
+      question: "Who proposed the theory of evolution by natural selection?",
+      options: [
+        "Charles Darwin",
+        "Gregor Mendel",
+        "Louis Pasteur",
+        "Alexander Fleming"
+      ],
+      answer: 0
+    },
+    {
+      question: "What is the term for structures that are similar due to common ancestry?",
+      options: [
+        "Homologous structures",
+        "Analogous structures",
+        "Vestigial structures",
+        "Derived structures"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which process leads to changes in allele frequencies in a population over time?",
+      options: [
+        "Genetic drift",
+        "Mutation",
+        "Migration",
+        "Natural selection"
+      ],
+      answer: 3
+    },
+    {
+      question: "What is the term for the evolution of similar features in unrelated species?",
+      options: [
+        "Convergent evolution",
+        "Divergent evolution",
+        "Coevolution",
+        "Parallel evolution"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which concept describes when two populations become so different they can no longer interbreed?",
+      options: [
+        "Speciation",
+        "Adaptation",
+        "Mutation",
+        "Genetic drift"
+      ],
+      answer: 0
+    }
+  ],
+  
+  "human-anatomy": [
+    {
+      question: "Which organ is primarily responsible for filtering blood?",
+      options: [
+        "Kidneys",
+        "Liver",
+        "Lungs",
+        "Spleen"
+      ],
+      answer: 0
+    },
+    {
+      question: "What is the largest organ in the human body?",
+      options: [
+        "Skin",
+        "Liver",
+        "Brain",
+        "Intestines"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which part of the brain is responsible for balance and coordination?",
+      options: [
+        "Cerebellum",
+        "Cerebrum",
+        "Medulla oblongata",
+        "Hypothalamus"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which hormone regulates blood glucose levels?",
+      options: [
+        "Insulin",
+        "Estrogen",
+        "Testosterone",
+        "Thyroxine"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which blood vessels carry blood away from the heart?",
+      options: [
+        "Arteries",
+        "Veins",
+        "Capillaries",
+        "Venules"
+      ],
+      answer: 0
+    }
+  ],
+  
+  "ecology": [
+    {
+      question: "What is the term for all the organisms living in a particular area?",
+      options: [
+        "Community",
+        "Population",
+        "Ecosystem",
+        "Biosphere"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which of the following is an abiotic factor in an ecosystem?",
+      options: [
+        "Temperature",
+        "Plants",
+        "Animals",
+        "Bacteria"
+      ],
+      answer: 0
+    },
+    {
+      question: "What term describes the role an organism plays in its environment?",
+      options: [
+        "Ecological niche",
+        "Habitat",
+        "Biome",
+        "Ecosystem"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which relationship describes one organism benefiting while the other is harmed?",
+      options: [
+        "Parasitism",
+        "Mutualism",
+        "Commensalism",
+        "Competition"
+      ],
+      answer: 0
+    },
+    {
+      question: "What is the process by which energy and nutrients move through an ecosystem?",
+      options: [
+        "Energy flow",
+        "Adaptation",
+        "Evolution",
+        "Succession"
+      ],
+      answer: 0
+    }
+  ],
+  
+  "microbiology": [
+    {
+      question: "Which of the following is NOT a type of microorganism?",
+      options: [
+        "Protozoa",
+        "Bacteria",
+        "Virus",
+        "Nematode"
+      ],
+      answer: 3
+    },
+    {
+      question: "What structure do bacteria have that viruses do not?",
+      options: [
+        "Cell membrane",
+        "DNA or RNA",
+        "Protein coat",
+        "Genetic material"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which microorganism is responsible for fermentation in bread and beer?",
+      options: [
+        "Yeast",
+        "Bacteria",
+        "Algae",
+        "Protozoa"
+      ],
+      answer: 0
+    },
+    {
+      question: "What term describes microorganisms that can survive in extreme environments?",
+      options: [
+        "Extremophiles",
+        "Mesophiles",
+        "Thermophiles",
+        "Psychrophiles"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which structure helps some bacteria move through liquid environments?",
+      options: [
+        "Flagellum",
+        "Pilus",
+        "Capsule",
+        "Cell wall"
+      ],
+      answer: 0
+    }
+  ],
+  
+  "biochemistry": [
+    {
+      question: "Which macromolecule stores genetic information?",
+      options: [
+        "Nucleic acids",
+        "Proteins",
+        "Lipids",
+        "Carbohydrates"
+      ],
+      answer: 0
+    },
+    {
+      question: "What is the primary role of enzymes in biochemical reactions?",
+      options: [
+        "Catalyzing reactions",
+        "Storing energy",
+        "Transporting molecules",
+        "Cell signaling"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which process breaks down glucose to produce ATP?",
+      options: [
+        "Glycolysis",
+        "Photosynthesis",
+        "Krebs cycle",
+        "Beta-oxidation"
+      ],
+      answer: 0
+    },
+    {
+      question: "What type of bond connects amino acids in proteins?",
+      options: [
+        "Peptide bond",
+        "Hydrogen bond",
+        "Ionic bond",
+        "Disulfide bridge"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which molecule is known as the 'energy currency' of cells?",
+      options: [
+        "ATP",
+        "ADP",
+        "Glucose",
+        "NADH"
+      ],
+      answer: 0
+    }
+  ],
+  
+  "plant-biology": [
+    {
+      question: "Which of the following is a function of the xylem in plants?",
+      options: [
+        "Transport of water and nutrients",
+        "Transport of sugars",
+        "Reproduction",
+        "Photosynthesis"
+      ],
+      answer: 0
+    },
+    {
+      question: "What is the primary site of photosynthesis in plants?",
+      options: [
+        "Chloroplasts",
+        "Mitochondria",
+        "Nucleus",
+        "Vacuole"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which plant hormone is responsible for fruit ripening?",
+      options: [
+        "Ethylene",
+        "Auxin",
+        "Gibberellin",
+        "Cytokinin"
+      ],
+      answer: 0
+    },
+    {
+      question: "What structure allows gas exchange in plant leaves?",
+      options: [
+        "Stomata",
+        "Lenticels",
+        "Root hairs",
+        "Vascular bundles"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which process in plants converts light energy into chemical energy?",
+      options: [
+        "Photosynthesis",
+        "Respiration",
+        "Transpiration",
+        "Germination"
+      ],
+      answer: 0
+    }
+  ],
+  
+  "zoology": [
+    {
+      question: "Which of the following is NOT a characteristic of mammals?",
+      options: [
+        "Laying eggs",
+        "Hair or fur",
+        "Mammary glands",
+        "Warm-blooded"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which animal phylum includes insects, spiders, and crustaceans?",
+      options: [
+        "Arthropoda",
+        "Mollusca",
+        "Chordata",
+        "Annelida"
+      ],
+      answer: 0
+    },
+    {
+      question: "What type of skeleton do insects have?",
+      options: [
+        "Exoskeleton",
+        "Endoskeleton",
+        "Hydrostatic skeleton",
+        "Cartilaginous skeleton"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which class of animals includes frogs and toads?",
+      options: [
+        "Amphibia",
+        "Reptilia",
+        "Aves",
+        "Mammalia"
+      ],
+      answer: 0
+    },
+    {
+      question: "What is the process of shedding an outer layer of skin in reptiles?",
+      options: [
+        "Molting",
+        "Metamorphosis",
+        "Hibernation",
+        "Estivation"
+      ],
+      answer: 0
+    }
+  ],
+  
+  "biotechnology": [
+    {
+      question: "Which technique is used to make multiple copies of DNA?",
+      options: [
+        "PCR",
+        "Gel electrophoresis",
+        "Chromatography",
+        "Spectrophotometry"
+      ],
+      answer: 0
+    },
+    {
+      question: "What is the term for genetically modified organisms used in agriculture?",
+      options: [
+        "Transgenic crops",
+        "Hybrid crops",
+        "Cultivars",
+        "Heirloom crops"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which technology allows scientists to edit DNA sequences precisely?",
+      options: [
+        "CRISPR-Cas9",
+        "PCR",
+        "Gel electrophoresis",
+        "Flow cytometry"
+      ],
+      answer: 0
+    },
+    {
+      question: "What is the process of using microorganisms to clean up pollutants?",
+      options: [
+        "Bioremediation",
+        "Fermentation",
+        "Pasteurization",
+        "Eutrophication"
+      ],
+      answer: 0
+    },
+    {
+      question: "Which technique separates DNA fragments based on size?",
+      options: [
+        "Gel electrophoresis",
+        "Chromatography",
+        "Centrifugation",
+        "Filtration"
+      ],
+      answer: 0
+    },
+    {
+    question: "What is the primary goal of gene cloning in biotechnology?",
+    options: [
+        "To create multiple copies of a specific gene",
+        "To introduce foreign DNA into an organism",
+        "To repair damaged genes",
+        "To synthesize new proteins"
+    ],
+    answer: 0
+},
+{
+    question: "What is the purpose of the enzyme reverse transcriptase in biotechnology?",
+    options: [
+        "To synthesize complementary DNA (cDNA) from RNA",
+        "To replicate DNA",
+        "To break down proteins",
+        "To transcribe DNA into RNA"
+    ],
+    answer: 0
+},
+{
+    question: "Which of the following is a method of DNA sequencing?",
+    options: [
+        "Sanger sequencing",
+        "Gel electrophoresis",
+        "Polymerase chain reaction",
+        "Western blotting"
+    ],
+    answer: 0
+},
+{
+    question: "What is a biopharmaceutical?",
+    options: [
+        "A pharmaceutical product produced using biotechnology methods",
+        "A product made from natural plant-based substances",
+        "A chemical drug synthesized in a laboratory",
+        "A medicine derived from animal products"
+    ],
+    answer: 0
+},
+{
+    question: "What is a genetically modified organism (GMO) typically used for in agriculture?",
+    options: [
+        "To increase resistance to pests or disease",
+        "To grow crops faster in the wild",
+        "To prevent plants from producing flowers",
+        "To alter the natural pollination process"
+    ],
+    answer: 0
+},
+{
+    question: "What is the main use of stem cells in biotechnology?",
+    options: [
+        "To regenerate tissues and organs for medical applications",
+        "To create genetically modified crops",
+        "To produce therapeutic proteins",
+        "To clone animals"
+    ],
+    answer: 0
+},
+{
+    question: "What is the process of fermentation used for in biotechnology?",
+    options: [
+        "To convert sugars into alcohol or acids through microbial activity",
+        "To amplify DNA",
+        "To create synthetic proteins",
+        "To clone microorganisms"
+    ],
+    answer: 0
+},
+{
+    question: "What is the role of a plasmid in genetic engineering?",
+    options: [
+        "To carry and replicate foreign DNA in bacteria",
+        "To replicate the host cell's DNA",
+        "To transcribe RNA into proteins",
+        "To store and release energy for cell metabolism"
+    ],
+    answer: 0
+},
+{
+    question: "What is CRISPR technology used for in biotechnology?",
+    options: [
+        "To edit genes with precision",
+        "To clone entire organisms",
+        "To synthesize RNA from DNA",
+        "To transfect cells with new proteins"
+    ],
+    answer: 0
+},
+{
+    question: "What is the primary difference between DNA and RNA?",
+    options: [
+        "RNA contains ribose sugar, while DNA contains deoxyribose",
+        "DNA is double-stranded, while RNA is single-stranded",
+        "RNA contains uracil instead of thymine",
+        "All of the above"
+    ],
+    answer: 3
+},
+{
+    question: "What is the role of recombinant DNA technology?",
+    options: [
+        "To introduce foreign DNA into an organism to produce a desired trait",
+        "To create artificial proteins from scratch",
+        "To modify plant seeds",
+        "To extract DNA from organisms"
+    ],
+    answer: 0
+},
+{
+    question: "What is a bioremediation process?",
+    options: [
+        "The use of microorganisms to clean up environmental pollutants",
+        "The use of genetically modified plants to grow faster",
+        "The process of modifying an organism's genes",
+        "The use of animals in pharmaceutical production"
+    ],
+    answer: 0
+},
+{
+    question: "What is the process of PCR (Polymerase Chain Reaction) used for?",
+    options: [
+        "To amplify a specific segment of DNA",
+        "To introduce new genes into organisms",
+        "To identify specific proteins in a sample",
+        "To perform DNA sequencing"
+    ],
+    answer: 0
+},
+{
+    question: "What is the function of a restriction enzyme in biotechnology?",
+    options: [
+        "To cut DNA at specific locations",
+        "To repair DNA damage",
+        "To synthesize RNA",
+        "To promote DNA replication"
+    ],
+    answer: 0
+},
+{
+    question: "Which of the following is NOT a potential application of biotechnology?",
+    options: [
+        "Gene therapy for curing genetic disorders",
+        "Improvement of agricultural crops",
+        "Mass production of synthetic chemical fertilizers",
+        "Production of insulin using bacteria"
+    ],
+    answer: 2
+},
+{
+    question: "What is a monoclonal antibody?",
+    options: [
+        "An antibody produced by a single clone of cells",
+        "An antibody that binds to multiple targets",
+        "An antibody produced in plants",
+        "A naturally occurring antibody in the immune system"
+    ],
+    answer: 0
+},
+{
+    question: "What is bioinformatics?",
+    options: [
+        "The application of computational tools to analyze biological data",
+        "The use of biotechnology in environmental conservation",
+        "The study of microbial organisms in the laboratory",
+        "The creation of synthetic organisms"
+    ],
+    answer: 0
+},
+{
+    question: "What is the purpose of an expression vector in genetic engineering?",
+    options: [
+        "To introduce and express foreign genes in host cells",
+        "To store plasmid DNA",
+        "To transfer RNA to DNA",
+        "To repair damaged DNA"
+    ],
+    answer: 0
+},
+{
+    question: "What is an example of a product created through biotechnology?",
+    options: [
+        "Insulin produced by genetically modified bacteria",
+        "Artificial sweeteners made from sugar cane",
+        "Petroleum-based plastics",
+        "Energy drinks made from plants"
+    ],
+    answer: 0
+}
 
-        // Enable start button when a topic is selected
+  ]
+};
+
+        // Enable the start button when a topic is selected
         topicSelect.addEventListener('change', () => {
-            startBtn.disabled = topicSelect.value === '';
+            selectedTopic = topicSelect.value;
+            startBtn.disabled = false;
         });
 
-        // Start Quiz Button Event Listener
+        // Start the quiz when the start button is clicked
         startBtn.addEventListener('click', startQuiz);
 
-        // Restart Quiz Button Event Listener
+        // Reset quiz when the restart button is clicked
         restartBtn.addEventListener('click', () => {
-            resultSection.style.display = 'none';
-            setupSection.style.display = 'block';
+            resultsSection.classList.remove('active');
+            topicSelection.style.display = 'block';
+            topicSelect.value = '';
+            startBtn.disabled = true;
         });
 
         // Start the quiz
         function startQuiz() {
-            // Get selected topic
-            quizState.currentTopic = topicSelect.value;
-            
-            // Check if there are questions for this topic
-            if (!questionBanks[quizState.currentTopic] || questionBanks[quizState.currentTopic].length === 0) {
-                alert("No questions available for this topic yet. Please select another topic or add questions to the topic.");
+            // Check if questions are available for the selected topic
+            if (questionBanks[selectedTopic].length === 0) {
+                alert("No questions available for this topic yet. Please choose another topic.");
                 return;
             }
             
-            // Reset quiz state
-            quizState.currentQuestions = [];
-            quizState.currentQuestionIndex = 0;
-            quizState.score = 0;
-            quizState.answerTimes = [];
+            // Choose 10 random questions from the selected topic
+            quizQuestions = getRandomQuestions(questionBanks[selectedTopic], 10);
             
-            // Randomly select questions for this quiz
-            selectRandomQuestions();
+            // Reset quiz variables
+            currentQuestion = 0;
+            score = 0;
             
-            // Update UI
-            setupSection.style.display = 'none';
-            quizSection.style.display = 'block';
+            // Update the UI
+            currentScoreElement.textContent = score;
+            totalQuestionsElement.textContent = quizQuestions.length;
             
-            // Display first question
-            displayQuestion();
+            // Hide topic selection and show quiz section
+            topicSelection.style.display = 'none';
+            quizSection.classList.add('active');
+            
+            // Record start time
+            quizStartTime = new Date().getTime();
+            
+            // Show the first question
+            showQuestion();
         }
 
-        // Select random questions from the question bank
-        function selectRandomQuestions() {
-            const allQuestions = [...questionBanks[quizState.currentTopic]];
-            const selectedQuestions = [];
-            
-            // If we have fewer questions than needed, use all of them
-            if (allQuestions.length <= quizSettings.questionsPerQuiz) {
-                quizState.currentQuestions = allQuestions;
-            } else {
-                // Randomly select questions
-                while (selectedQuestions.length < quizSettings.questionsPerQuiz && allQuestions.length > 0) {
-                    const randomIndex = Math.floor(Math.random() * allQuestions.length);
-                    selectedQuestions.push(allQuestions.splice(randomIndex, 1)[0]);
-                }
-                quizState.currentQuestions = selectedQuestions;
-            }
-            
-            // Update total questions display
-            totalQuestionsElement.textContent = quizState.currentQuestions.length;
+        // Get random questions from the question bank
+        function getRandomQuestions(questions, count) {
+            const shuffled = [...questions].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
         }
 
-        // Display the current question
-        function displayQuestion() {
-            // Clear any previous timer
-            clearInterval(quizState.timerInterval);
-            
-            // Get current question
-            const currentQuestion = quizState.currentQuestions[quizState.currentQuestionIndex];
-            
-            // Update question number display
-            currentQuestionElement.textContent = quizState.currentQuestionIndex + 1;
-            
-            // Display question text
-            questionText.textContent = currentQuestion.question;
-            
-            // Clear previous options
-            optionsContainer.innerHTML = '';
-            
-            // Display options
-            currentQuestion.options.forEach((option, index) => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'option';
-                optionElement.textContent = option;
-                optionElement.dataset.index = index;
-                optionElement.addEventListener('click', selectOption);
-                optionsContainer.appendChild(optionElement);
-            });
-            
-            // Reset selected option
-            quizState.selectedOption = null;
+        // Show the current question and answers
+        function showQuestion() {
+            // Reset timer
+            clearInterval(timerInterval);
+            timeLeft = 20;
+            timerBar.style.width = '100%';
+            timerText.textContent = timeLeft;
             
             // Start timer
             startTimer();
-        }
-
-        // Start timer for current question
-        function startTimer() {
-            quizState.remainingTime = quizSettings.timePerQuestion;
             
-            // Reset timer bar
-            timerBar.style.width = '100%';
+            // Update question number
+            currentQuestionElement.textContent = currentQuestion + 1;
             
-            // Start time tracking for this question
-            const startTime = Date.now();
+            // Get the current question
+            const question = quizQuestions[currentQuestion];
             
-            // Set timer interval
-            quizState.timerInterval = setInterval(() => {
-                quizState.remainingTime -= 0.1;
-                
-                // Update timer bar
-                const percentRemaining = (quizState.remainingTime / quizSettings.timePerQuestion) * 100;
-                timerBar.style.width = `${percentRemaining}%`;
-                
-                // If time is up
-                if (quizState.remainingTime <= 0) {
-                    clearInterval(quizState.timerInterval);
-                    
-                    // Record time taken (full time since they didn't answer)
-                    quizState.answerTimes.push(quizSettings.timePerQuestion);
-                    
-                    // Show correct answer
-                    showCorrectAnswer();
-                    
-                    // Move to next question after a short delay
-                    setTimeout(nextQuestion, 1500);
-                }
-            }, 100);
-        }
-
-        // Handle option selection
-        function selectOption(event) {
-            // If already selected an option, don't allow changing
-            if (quizState.selectedOption !== null) return;
+            // Update question text
+            questionText.textContent = question.question;
             
-            // Clear timer
-            clearInterval(quizState.timerInterval);
+            // Clear previous answer buttons
+            answerButtons.innerHTML = '';
             
-            // Get selected option index
-            const selectedIndex = parseInt(event.target.dataset.index);
-            quizState.selectedOption = selectedIndex;
-            
-            // Get current question
-            const currentQuestion = quizState.currentQuestions[quizState.currentQuestionIndex];
-            
-            // Calculate time taken
-            const timeTaken = quizSettings.timePerQuestion - quizState.remainingTime;
-            quizState.answerTimes.push(timeTaken);
-            
-            // Check if answer is correct
-            const isCorrect = selectedIndex === currentQuestion.correctIndex;
-            
-            // Update score
-            if (isCorrect) {
-                quizState.score++;
-            }
-            
-            // Highlight selected option
-            event.target.classList.add('selected');
-            
-            // Show correct answer
-            showCorrectAnswer();
-            
-            // Move to next question after a short delay
-            setTimeout(nextQuestion, 1500);
-        }
-
-        // Show the correct answer
-        function showCorrectAnswer() {
-            const currentQuestion = quizState.currentQuestions[quizState.currentQuestionIndex];
-            const options = document.querySelectorAll('.option');
-            
-            options.forEach((option, index) => {
-                if (index === currentQuestion.correctIndex) {
-                    option.classList.add('correct');
-                } else if (index === quizState.selectedOption) {
-                    option.classList.add('wrong');
-                }
+            // Create answer buttons
+            question.options.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.classList.add('answer-btn');
+                button.textContent = answer;
+                button.dataset.index = index;
+                button.addEventListener('click', selectAnswer);
+                answerButtons.appendChild(button);
             });
         }
 
-        // Move to the next question
-        function nextQuestion() {
-            quizState.currentQuestionIndex++;
+        // Start the timer for the current question
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerText.textContent = timeLeft;
+                timerBar.style.width = `${(timeLeft / 20) * 100}%`;
+                
+                if (timeLeft <= 5) {
+                    timerBar.style.backgroundColor = 'var(--danger-color)';
+                } else if (timeLeft <= 10) {
+                    timerBar.style.backgroundColor = 'var(--warning-color)';
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeUp();
+                }
+            }, 1000);
+        }
+
+        // Handle when time runs out for a question
+        function handleTimeUp() {
+            // Disable all answer buttons
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
             
-            // Check if quiz is complete
-            if (quizState.currentQuestionIndex >= quizState.currentQuestions.length) {
-                showResults();
+            // Highlight the correct answer
+            const correctAnswerIndex = quizQuestions[currentQuestion].answer;
+            buttons[correctAnswerIndex].classList.add('correct');
+            
+            // Wait a moment before moving to the next question
+            setTimeout(nextQuestion, 1500);
+        }
+
+        // Handle when an answer is selected
+        function selectAnswer(e) {
+            // Stop the timer
+            clearInterval(timerInterval);
+            
+            // Get the selected answer index
+            const selectedIndex = parseInt(e.target.dataset.index);
+            
+            // Get the correct answer index
+            const correctAnswerIndex = quizQuestions[currentQuestion].answer;
+            
+            // Disable all answer buttons
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+            
+            // Highlight the selected answer
+            e.target.classList.add('selected');
+            
+            // Check if the answer is correct
+            if (selectedIndex === correctAnswerIndex) {
+                e.target.classList.add('correct');
+                score++;
+                currentScoreElement.textContent = score;
             } else {
-                displayQuestion();
+                e.target.classList.add('incorrect');
+                buttons[correctAnswerIndex].classList.add('correct');
+            }
+            
+            // Wait a moment before moving to the next question
+            setTimeout(nextQuestion, 1500);
+        }
+
+        // Move to the next question or end the quiz
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < quizQuestions.length) {
+                showQuestion();
+            } else {
+                endQuiz();
             }
         }
 
-        // Show quiz results
-        function showResults() {
-            quizSection.style.display = 'none';
-            resultSection.style.display = 'block';
+        // End the quiz and show results
+        function endQuiz() {
+            // Record end time
+            quizEndTime = new Date().getTime();
             
-            // Calculate score percentage
-            const scorePercent = Math.round((quizState.score / quizState.currentQuestions.length) * 100);
+            // Calculate total time in seconds
+            const totalTimeInSeconds = Math.floor((quizEndTime - quizStartTime) / 1000);
             
-            // Calculate average time
-            const avgTime = quizState.answerTimes.reduce((sum, time) => sum + time, 0) / quizState.answerTimes.length;
+            // Update results
+            finalScoreElement.textContent = score;
+            maxScoreElement.textContent = quizQuestions.length;
+            totalTimeElement.textContent = totalTimeInSeconds;
             
-            // Update result display
-            scorePercentElement.textContent = scorePercent;
-            scoreValueElement.textContent = quizState.score;
-            scoreTotalElement.textContent = quizState.currentQuestions.length;
-            correctAnswersElement.textContent = quizState.score;
-            incorrectAnswersElement.textContent = quizState.currentQuestions.length - quizState.score;
-            avgTimeElement.textContent = avgTime.toFixed(1);
+            // Generate results message based on score
+            let resultsMessage = '';
+            const percentage = (score / quizQuestions.length) * 100;
+            
+            if (percentage >= 90) {
+                resultsMessage = 'Excellent! You have a profound understanding of this engineering discipline.';
+            } else if (percentage >= 70) {
+                resultsMessage = 'Great job! You have a solid grasp of the key concepts.';
+            } else if (percentage >= 50) {
+                resultsMessage = 'Good effort! You know the basics but might want to review some areas.';
+            } else {
+                resultsMessage = 'Keep studying! This topic requires more practice to master.';
+            }
+            
+            resultsMessageElement.textContent = resultsMessage;
+            
+            // Hide quiz section and show results section
+            quizSection.classList.remove('active');
+            resultsSection.classList.add('active');
         }
     </script>
 </body>
 </html>
+
+
